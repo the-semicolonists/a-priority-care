@@ -39,7 +39,7 @@ export default function Hero() {
                   left: 0,
                   height: "100%",
                   zIndex: -1,
-                  transform: "scaleX(-1)"
+                  transform: "scaleX(-1)",
                 }}
               />
               <div className="container h-100">
@@ -51,13 +51,11 @@ export default function Hero() {
                     <div className="slide-layer slide-font-2">
                       Caring for You
                     </div>
-                    <div className="slide-layer slide-font-2">
-                      Like Family
-                    </div>
+                    <div className="slide-layer slide-font-2">Like Family</div>
                   </div>
                   <div className="slide-layer">
                     <Link
-                      href={`/about-us`}
+                      href="#services"
                       className="themesflat-button bg-accent big2"
                     >
                       <span>Learn More</span>
@@ -98,7 +96,7 @@ export default function Hero() {
                   </div>
                   <div className="slide-layer">
                     <Link
-                      href={`/services`}
+                      href="#services"
                       className="themesflat-button bg-accent big2"
                     >
                       <span>Our Services</span>
