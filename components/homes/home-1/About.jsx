@@ -73,7 +73,7 @@ export default function About() {
                       data-smobile={28}
                     />
                     <h3>
-                      <Link href={`/services`}>In-Home Support</Link>
+                      <Link href="#contact">In-Home Support</Link>
                     </h3>
                     <p>
                       Reliable care for seniors, recovery patients, and
@@ -93,7 +93,7 @@ export default function About() {
                       data-smobile={28}
                     />
                     <h3>
-                      <Link href={`/services`}>Trusted Caregivers</Link>
+                      <Link href="#contact">Trusted Caregivers</Link>
                     </h3>
                     <p>
                       Our experienced team provides professional, compassionate
@@ -110,7 +110,7 @@ export default function About() {
                 />
                 <div className="box-button">
                   <Link
-                    href={`/contact`}
+                    href="#contact"
                     className="themesflat-button bg-accent btn-header"
                   >
                     <span>Contact Us</span>
