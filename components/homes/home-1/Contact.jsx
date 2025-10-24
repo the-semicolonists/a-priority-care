@@ -130,7 +130,6 @@ export default function Contact() {
                     </div>
                   </div>
                 </form>
-
                 <Image
                   alt="image"
                   className="img-box-1"
@@ -142,8 +141,8 @@ export default function Contact() {
                   alt="image"
                   className="img-box-2"
                   src="/assets/image/thumbnails/logocontact.webp"
-                  width={142}
-                  height={100}
+                  width={180}
+                  height={180}
                 />
                 <div
                   className="themesflat-spacer clearfix"

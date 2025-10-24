@@ -4804,10 +4804,11 @@ ul.list-hours li .opening-hours {
 .img-box-2 {
   position: absolute;
   top: 50%;
-  left: -76px;
+  left: -100px;
   top: 50%;
-  margin-top: -58px;
+  margin-top: -100px;
   z-index: 2;
+  object-fit: contain;
 }
 
 /* articles */
