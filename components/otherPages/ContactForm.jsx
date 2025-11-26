@@ -1,7 +1,80 @@
 "use client";
-import React from "react";
+import React, { useRef, useState } from "react";
 
 export default function ContactForm() {
+  const formRef = useRef(null);
+  const [formState, setFormState] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+
+  const isFormValid =
+    formState.name.trim() !== "" &&
+    formState.phone.trim().length === 14 &&
+    formState.email.trim() !== "" &&
+    formState.message.trim() !== "";
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormState({ ...formState, [name]: value });
+  };
+
+  const handlePhoneChange = (e) => {
+    let input = e.target.value.replace(/\D/g, "");
+    if (input.length > 10) input = input.slice(0, 10);
+
+    let formatted = "";
+    if (input.length > 0) formatted += "(" + input.slice(0, 3);
+    if (input.length >= 4) formatted += ") - " + input.slice(3, 6);
+    if (input.length >= 7) formatted += " " + input.slice(6, 10);
+
+    setFormState({ ...formState, phone: formatted });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!formRef.current) return;
+
+    const googleFormUrl =
+      "https://docs.google.com/forms/d/e/1FAIpQLSeABjEhVJnXhhJacNHbJ7UkPQ_H7vdVHSeVj7cJkN43Z3doyQ/formResponse";
+
+    const formData = new FormData();
+    formData.append("entry.1676264414", formState.name);
+    formData.append("entry.1134576357", formState.phone);
+    formData.append("entry.53978705", formState.email);
+    formData.append("entry.1757307627", formState.message);
+
+    // Create a temporary form to submit to Google Forms
+    const tempForm = document.createElement("form");
+    tempForm.action = googleFormUrl;
+    tempForm.method = "POST";
+    tempForm.target = "_blank";
+
+    formData.forEach((value, key) => {
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = key;
+      input.value = value;
+      tempForm.appendChild(input);
+    });
+
+    document.body.appendChild(tempForm);
+    tempForm.submit();
+    document.body.removeChild(tempForm);
+
+    // Clear original form
+    setFormState({
+      name: "",
+      phone: "",
+      email: "",
+      subject: "",
+      message: "",
+    });
+  };
+
   return (
     <section className="contact-bot">
       <div className="container">
@@ -33,9 +106,9 @@ export default function ContactForm() {
                 data-smobile={50}
               />
               <form
+                ref={formRef}
                 className="content-form wow fadeInUp"
-                id="contactform"
-                onSubmit={(e) => e.preventDefault()}
+                onSubmit={handleSubmit}
                 acceptCharset="utf-8"
               >
                 <div className="row">
@@ -44,11 +117,12 @@ export default function ContactForm() {
                       tabIndex={1}
                       id="name"
                       name="name"
-                      defaultValue=""
                       className="input-contact"
                       type="text"
                       placeholder="Full Name"
-                      required=""
+                      required
+                      value={formState.name}
+                      onChange={handleChange}
                     />
                   </div>
                   <div className="col">
@@ -56,11 +130,12 @@ export default function ContactForm() {
                       tabIndex={2}
                       id="phone"
                       name="phone"
-                      defaultValue=""
                       className="input-contact"
                       type="text"
                       placeholder="Phone Number"
-                      required=""
+                      required
+                      value={formState.phone}
+                      onChange={handlePhoneChange}
                     />
                   </div>
                 </div>
@@ -71,10 +146,11 @@ export default function ContactForm() {
                       tabIndex={3}
                       id="email"
                       name="email"
-                      defaultValue=""
                       className="input-contact"
                       placeholder="Email Address"
-                      required=""
+                      required
+                      value={formState.email}
+                      onChange={handleChange}
                     />
                   </div>
                   <div className="col">
@@ -83,9 +159,10 @@ export default function ContactForm() {
                       tabIndex={4}
                       id="subject"
                       name="subject"
-                      defaultValue=""
                       className="form-control"
                       placeholder="Subject"
+                      value={formState.subject}
+                      onChange={handleChange}
                     />
                   </div>
                 </div>
@@ -95,7 +172,8 @@ export default function ContactForm() {
                     tabIndex={5}
                     placeholder="Your Message"
                     maxLength={1000}
-                    defaultValue={""}
+                    value={formState.message}
+                    onChange={handleChange}
                   />
                 </div>
                 <div className="row">
@@ -107,6 +185,7 @@ export default function ContactForm() {
                         type="submit"
                         className="themesflat-button bg-accent btn-submit"
                         role="button"
+                        disabled={!isFormValid}
                       >
                         <span>Send</span>
                       </button>

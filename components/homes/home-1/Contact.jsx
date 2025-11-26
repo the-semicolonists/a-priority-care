@@ -1,15 +1,72 @@
 "use client";
-import React from "react";
+import React, { useRef } from "react";
 import Image from "next/image";
 
 export default function Contact() {
+  const formRef = useRef(null);
+
+  // Format phone number as (XXX) - XXX XXXX
+  const handlePhoneChange = (e) => {
+    let input = e.target.value.replace(/\D/g, ""); // remove non-digits
+    if (input.length > 10) input = input.slice(0, 10);
+
+    let formatted = "";
+    if (input.length > 0) formatted += "(" + input.slice(0, 3);
+    if (input.length >= 4) formatted += ") - " + input.slice(3, 6);
+    if (input.length >= 7) formatted += " " + input.slice(6, 10);
+
+    e.target.value = formatted;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!formRef.current) return;
+
+    // Google Form entry IDs
+    const googleFormUrl =
+      "https://docs.google.com/forms/d/e/1FAIpQLSeABjEhVJnXhhJacNHbJ7UkPQ_H7vdVHSeVj7cJkN43Z3doyQ/formResponse";
+
+    const formData = new FormData();
+    formData.append("entry.1676264414", formRef.current.elements["name"].value);
+    formData.append(
+      "entry.1134576357",
+      formRef.current.elements["phone"].value
+    );
+    formData.append("entry.53978705", formRef.current.elements["email"].value);
+    formData.append(
+      "entry.1757307627",
+      formRef.current.elements["message"].value
+    );
+
+    // Create a temporary form to submit to Google Forms in a new tab
+    const tempForm = document.createElement("form");
+    tempForm.action = googleFormUrl;
+    tempForm.method = "POST";
+    tempForm.target = "_blank";
+
+    formData.forEach((value, key) => {
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = key;
+      input.value = value;
+      tempForm.appendChild(input);
+    });
+
+    document.body.appendChild(tempForm);
+    tempForm.submit();
+    document.body.removeChild(tempForm);
+
+    // Clear original form
+    formRef.current.reset();
+  };
+
   return (
     <section id="contact" className="fl-row contact-us">
       <div className="container-fluid">
         <div className="row">
           <div className="col-12">
             <div className="fl-box-contact">
-              
               {/* Google Map */}
               <div className="map">
                 <iframe
@@ -17,7 +74,7 @@ export default function Contact() {
                   width="100%"
                   height="450"
                   style={{ border: 0 }}
-                  allowFullScreen=""
+                  allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
                 ></iframe>
@@ -25,28 +82,14 @@ export default function Contact() {
 
               {/* Contact Form */}
               <div className="form-contact-us fl-st-title">
-                <div
-                  className="themesflat-spacer clearfix"
-                  data-desktop={113}
-                  data-mobile={70}
-                  data-smobile={70}
-                />
                 <h3 className="heading theme-color">CONTACT US</h3>
                 <div className="title-heading text-color-white">
-                  Have Questions?
-                  <br />
-                  Get in Touch!
+                  Have Questions? <br /> Get in Touch!
                 </div>
-                <div
-                  className="themesflat-spacer clearfix"
-                  data-desktop={18}
-                  data-mobile={18}
-                  data-smobile={18}
-                />
                 <form
+                  ref={formRef}
                   className="content-form wow fadeInUp"
-                  id="contactform"
-                  onSubmit={(e) => e.preventDefault()}
+                  onSubmit={handleSubmit}
                   acceptCharset="utf-8"
                 >
                   <div className="row">
@@ -70,6 +113,7 @@ export default function Contact() {
                         type="text"
                         placeholder="Phone Number"
                         required
+                        onChange={handlePhoneChange}
                       />
                     </div>
                   </div>
@@ -85,51 +129,29 @@ export default function Contact() {
                         required
                       />
                     </div>
-                    <div className="col">
-                      <input
-                        type="text"
-                        tabIndex={4}
-                        id="subject"
-                        name="subject"
-                        className="form-control"
-                        placeholder="Subject"
-                      />
-                    </div>
                   </div>
                   <div>
                     <textarea
                       name="message"
                       tabIndex={5}
                       className="form-control"
-                      id="exampleFormControlTextarea2"
                       placeholder="Your Message"
                       maxLength={1000}
+                      id="exampleFormControlTextarea2"
                     />
                   </div>
-                  <div className="row">
-                    <div className="col-xl-6 col-lg-6 col-md-6 col-sm-6">
-                      <div className="form-check">
-                        <input type="checkbox" />
-                        <span className="checkmark" />
-                        <span className="font-raguler font-rubik pdl-45">
-                          Also subscribe us
-                        </span>
-                      </div>
-                    </div>
-                    <div className="col-xl-6 col-lg-6 col-md-6 col-sm-6">
-                      <div className="box-submit">
-                        <button
-                          name="submit"
-                          id="submit"
-                          type="submit"
-                          className="themesflat-button bg-accent btn-submit"
-                        >
-                          <span>Send</span>
-                        </button>
-                      </div>
-                    </div>
+                  <div className="box-submit">
+                    <button
+                      name="submit"
+                      id="submit"
+                      type="submit"
+                      className="themesflat-button bg-accent btn-submit"
+                    >
+                      <span>Send</span>
+                    </button>
                   </div>
                 </form>
+
                 <Image
                   alt="image"
                   className="img-box-1"
@@ -144,14 +166,7 @@ export default function Contact() {
                   width={180}
                   height={180}
                 />
-                <div
-                  className="themesflat-spacer clearfix"
-                  data-desktop={106}
-                  data-mobile={40}
-                  data-smobile={40}
-                />
               </div>
-
             </div>
           </div>
         </div>
